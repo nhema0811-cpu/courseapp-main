@@ -21,10 +21,10 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Proper CORS setup for Vite (5173 / 5174)
+// ✅ CORS setup
 app.use(
   cors({
-    origin: true, // allows any localhost port during development
+    origin: process.env.FRONTEND_URL || "*",
     credentials: true,
   })
 );
@@ -37,15 +37,19 @@ app.use(
 );
 
 // =====================
-// Database Connection
+// Environment Variables
 // =====================
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 const DB_URI = process.env.MONGO_URI;
 
-mongoose
-  .connect(DB_URI)
-  .then(() => console.log("✅ Connected to MongoDB"))
-  .catch((error) => console.log("MongoDB Error:", error));
+// =====================
+// Cloudinary Config
+// =====================
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // =====================
 // Routes
@@ -56,17 +60,24 @@ app.use("/api/v1/admin", adminRoute);
 app.use("/api/v1/order", orderRoute);
 
 // =====================
-// Cloudinary Config
+// Test Route
 // =====================
-cloudinary.config({
-  cloud_name: process.env.cloud_name,
-  api_key: process.env.api_key,
-  api_secret: process.env.api_secret,
+app.get("/", (req, res) => {
+  res.send("Backend is running successfully 🚀");
 });
 
 // =====================
-// Start Server
+// Database Connection & Server Start
 // =====================
-app.listen(port, () => {
-  console.log(`🚀 Server is running on port ${port}`);
-});
+mongoose
+  .connect(DB_URI)
+  .then(() => {
+    console.log("✅ Connected to MongoDB");
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server is running on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error("❌ MongoDB Connection Error:", error.message);
+  });

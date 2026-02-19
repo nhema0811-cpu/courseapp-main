@@ -2,10 +2,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-import dotenv from "dotenv";
-
-dotenv.config();
-
 const {
   JWT_USER_PASSWORD,
   JWT_ADMIN_PASSWORD,
