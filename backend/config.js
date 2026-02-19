@@ -8,12 +8,14 @@ const {
   STRIPE_SECRET_KEY,
 } = process.env;
 
-if (!JWT_USER_PASSWORD || !JWT_ADMIN_PASSWORD || !STRIPE_SECRET_KEY) {
-  throw new Error("Missing required environment variables");
+// Only JWT is compulsory
+if (!JWT_USER_PASSWORD || !JWT_ADMIN_PASSWORD) {
+  throw new Error("Missing required JWT environment variables");
 }
 
+// Stripe is optional
 export default {
   JWT_USER_PASSWORD,
   JWT_ADMIN_PASSWORD,
-  STRIPE_SECRET_KEY,
+  STRIPE_SECRET_KEY: STRIPE_SECRET_KEY || "",
 };
