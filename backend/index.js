@@ -1,3 +1,6 @@
+import dns from "dns";
+dns.setDefaultResultOrder("ipv4first");
+
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -21,7 +24,6 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ CORS setup
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "*",
@@ -40,7 +42,7 @@ app.use(
 // Environment Variables
 // =====================
 const PORT = process.env.PORT || 3000;
-const DB_URI = process.env.MONGO_URI;
+const DB_URI = process.env.MONGO_URL; // ✅ FIXED HERE
 
 // =====================
 // Cloudinary Config
